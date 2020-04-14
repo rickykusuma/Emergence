@@ -1,6 +1,10 @@
 package id.ac.umn.tugasproject;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 
@@ -22,9 +28,12 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class HomeFragment extends Fragment {
 
+    private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1;
     FloatingActionButton menu,polisi,rumahSakit;
     Animation fabOpen, fabClose, rotateFoward, rotateBakcward;
     boolean isOpen = false;
+    String noPolisi = "1234";
+    String noAmbulance = "12345";
 
     @Nullable
     @Override
@@ -65,7 +74,24 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 animateFab();
-                Toast.makeText(getActivity(),"MASUK rumah sakit", LENGTH_SHORT).show();
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // Permission is not granted
+                    // Should we show an explanation?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CALL_PHONE)) {
+                        // Show an explanation to the user *asynchronously* -- don't block
+                        // this thread waiting for the user's response! After the user
+                        Toast.makeText(getActivity(),"We Need Your Permission to Make a Phone Call to Ambulance", LENGTH_SHORT).show();
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
+                    } else {
+                        // No explanation needed; request the permission
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
+                    }
+                } else {
+                    // Permission has already been granted
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + noAmbulance));
+                    startActivity(intent);
+                    Toast.makeText(getActivity(), "Calling Ambulance", LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -90,4 +116,5 @@ public class HomeFragment extends Fragment {
             isOpen = true;
         }
     }
+
 }
