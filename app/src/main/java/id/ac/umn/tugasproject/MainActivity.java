@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,4 +44,5 @@ public class MainActivity extends AppCompatActivity {
                 return true;
                 }
             };
+
 }
