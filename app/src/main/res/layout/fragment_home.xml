@@ -1,26 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="210dp"
-            android:background="@color/colorRed"
-            android:text="@string/danger"
-            android:textColor="@color/colorWhite"
-            android:textSize="50sp" />
-
-        <com.hitomi.cmlibrary.CircleMenu
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/menu"
+            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_add" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/rumahSakit"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/menu"
+            android:visibility="invisible"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:src="@drawable/ic_hospital" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/polisi"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/menu"
+            android:visibility="invisible"
+            android:src="@drawable/ic_home_black_24dp" />
+
 
 
     </RelativeLayout>
