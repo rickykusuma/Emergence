@@ -3,6 +3,7 @@ package id.ac.umn.tugasproject;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -18,6 +19,9 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNav = findViewById(R.id.btnNavigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+        HomeFragment mHomeFragment = new HomeFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container,mHomeFragment).commit();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
