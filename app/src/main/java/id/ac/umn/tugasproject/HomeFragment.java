@@ -66,7 +66,24 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 animateFab();
-                Toast.makeText(getActivity(),"MASUK POLISI", LENGTH_SHORT).show();
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // Permission is not granted
+                    // Should we show an explanation?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CALL_PHONE)) {
+                        // Show an explanation to the user *asynchronously* -- don't block
+                        // this thread waiting for the user's response! After the user
+                        Toast.makeText(getActivity(),"We Need Your Permission to Make a Phone Call to Police Station", LENGTH_SHORT).show();
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
+                    } else {
+                        // No explanation needed; request the permission
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
+                    }
+                } else {
+                    // Permission has already been granted
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + noPolisi));
+                    startActivity(intent);
+                    Toast.makeText(getActivity(), "Calling Police Station", LENGTH_SHORT).show();
+                }
             }
         });
 
