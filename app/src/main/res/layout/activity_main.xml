@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="TESTING GITHUB"
-        android:textSize="50sp"/>
+        android:textSize="50sp"
+        android:textAlignment="center"/>
 </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
