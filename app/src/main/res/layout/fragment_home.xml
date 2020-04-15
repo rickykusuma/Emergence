@@ -9,34 +9,124 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/textAlert"
+            android:layout_width="wrap_content"
+            android:textColor="#f06463"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:textSize="75px"
+            android:text="Long press to alert"/>
+
+
+        <ImageView
+            android:id="@+id/pulseAnim2"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="108dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_pulse" />
+
+        <ImageView
+            android:id="@+id/pulseAnim1"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="108dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_pulse" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/menu"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_add" />
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="108dp"
+            android:src="@drawable/ic_add"
+            app:backgroundTint="#f06463"
+            app:fabCustomSize="200dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/ask_for_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/menu"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="228dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/ic_hospital"
+            android:visibility="invisible"
+            app:backgroundTint="#f06463"
+            app:fabCustomSize="75dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/rumahSakit"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/menu"
+            android:layout_below="@+id/menu"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="304dp"
+            android:layout_marginTop="-73dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/ic_hospital"
             android:visibility="invisible"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:src="@drawable/ic_hospital" />
+            app:backgroundTint="#f06463"
+            app:fabCustomSize="75dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/pemadamKebakaran"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/menu"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="103dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/ic_hospital"
+            android:visibility="invisible"
+            app:backgroundTint="#f06463"
+            app:fabCustomSize="75dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/polisi"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/menu"
+            android:layout_below="@+id/menu"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="-73dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/ic_hospital"
             android:visibility="invisible"
-            android:src="@drawable/ic_home_black_24dp" />
+            app:backgroundTint="#f06463"
+            app:fabCustomSize="75dp" />
 
-
+        <Button
+            android:id="@+id/safeBtn"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="100dp"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:text="I'm safe"/>
 
     </RelativeLayout>
 

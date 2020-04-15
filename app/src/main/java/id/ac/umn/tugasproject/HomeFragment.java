@@ -8,8 +8,10 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -18,6 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,11 +52,13 @@ public class HomeFragment extends Fragment {
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int MY_PERMISSIONS_REQUEST_ALL_PERMISSION = 1;
-    FloatingActionButton menu,polisi,rumahSakit;
+    Button safebtn;
+    FloatingActionButton menu,polisi,rumahSakit,pemadamKebakaran, ask_for_help;
     Animation fabOpen, fabClose, rotateFoward, rotateBakcward;
     boolean isOpen = false;
     String noPolisi = "1234";
     String noAmbulance = "12345";
+    String noPemadam = "12345";
     String mobilenumber = "1234";
     String msgbody;
     Double Latitude,Longitude;
@@ -62,6 +69,8 @@ public class HomeFragment extends Fragment {
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
     private boolean requestingLocationUpdates;
+    private ImageView pulseAnim1, pulseAnim2;
+    private Handler pulseAnimHandler;
 
     @Nullable
     @Override
@@ -70,12 +79,18 @@ public class HomeFragment extends Fragment {
         menu = (FloatingActionButton)home_inflater.findViewById(R.id.menu);
         polisi = (FloatingActionButton)home_inflater.findViewById(R.id.polisi);
         rumahSakit = (FloatingActionButton)home_inflater.findViewById(R.id.rumahSakit);
+        pemadamKebakaran = (FloatingActionButton)home_inflater.findViewById(R.id.pemadamKebakaran);
+        ask_for_help = (FloatingActionButton)home_inflater.findViewById(R.id.ask_for_help);
         fabOpen = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_close);
         rotateBakcward =  AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_backward);
         rotateFoward =  AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_foward);
+        pulseAnim1 = (ImageView)home_inflater.findViewById(R.id.pulseAnim1);
+        pulseAnim2 = (ImageView)home_inflater.findViewById(R.id.pulseAnim2);
+        safebtn = (Button)home_inflater.findViewById(R.id.safeBtn);
+        pulseAnimHandler = new Handler();
         ask_permission();
-
+        // MAIN MENU DI KLIK 1x //
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +98,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
+        // MAIN MENU LONG PRESS //
         menu.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -94,6 +111,9 @@ public class HomeFragment extends Fragment {
                             "berikut adalah lokasi pemilik nomor hp ini : ";
                     SmsManager smgr = SmsManager.getDefault();
                     smgr.sendTextMessage(mobilenumber,null,msgbody,null,null);
+                    // INI RUN ANIMASI PULSE NYA //
+                    pulseRunnable.run();
+                    safebtn.setVisibility(View.VISIBLE);
                     Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception e){
@@ -124,28 +144,91 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        pemadamKebakaran.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animateFab();
+                // Permission has already been granted
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + noPemadam));
+                startActivity(intent);
+                Toast.makeText(getActivity(), "Calling Pemadam Kebakaran", LENGTH_SHORT).show();
+            }
+        });
+
+        ask_for_help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animateFab();
+                Toast.makeText(getActivity(), "TEST MASUK ASK FOR HELP", LENGTH_SHORT).show();
+            }
+        });
+
+        safebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pulseAnimHandler.removeCallbacks(pulseRunnable);
+                safebtn.setVisibility(View.INVISIBLE);
+            }
+        });
+
         return home_inflater;
     }
 
-
+    // ANIMASI MENU //
     private void animateFab(){
         if(isOpen){
             menu.startAnimation(rotateFoward);
             polisi.startAnimation(fabClose);
             rumahSakit.startAnimation(fabClose);
+            pemadamKebakaran.startAnimation(fabClose);
+            ask_for_help.startAnimation(fabClose);
             polisi.setClickable(false);
             rumahSakit.setClickable(false);
+            pemadamKebakaran.setClickable(false);
+            ask_for_help.setClickable(false);
             isOpen = false;
         }
         else{
             menu.startAnimation(rotateBakcward);
             polisi.startAnimation(fabOpen);
             rumahSakit.startAnimation(fabOpen);
+            pemadamKebakaran.startAnimation(fabOpen);
+            ask_for_help.startAnimation(fabOpen);
             polisi.setClickable(true);
             rumahSakit.setClickable(true);
+            pemadamKebakaran.setClickable(true);
+            ask_for_help.setClickable(true);
             isOpen = true;
         }
     }
+
+    // INI FUNCTION BUAT PULSE ANIMATION NYA PAS LONG PRESS  //
+    private Runnable pulseRunnable = new Runnable() {
+        @Override
+        public void run() {
+            pulseAnim1.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(1000).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    pulseAnim1.setScaleX(1f);
+                    pulseAnim1.setScaleY(1f);
+                    pulseAnim1.setAlpha(1f);
+                }
+            });
+
+            pulseAnim2.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(700).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    pulseAnim2.setScaleX(1f);
+                    pulseAnim2.setScaleY(1f);
+                    pulseAnim2.setAlpha(1f);
+                }
+            });
+
+            pulseAnimHandler.postDelayed(pulseRunnable, 1500);
+
+        }
+    };
+
 
     public void ask_permission() {
         // Ask Permission for first time
