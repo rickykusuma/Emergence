@@ -18,11 +18,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -55,6 +58,7 @@ public class HomeFragment extends Fragment {
     Button safebtn;
     FloatingActionButton menu,polisi,rumahSakit,pemadamKebakaran, ask_for_help;
     Animation fabOpen, fabClose, rotateFoward, rotateBakcward;
+    TextView alertText, alertText2;
     boolean isOpen = false;
     String noPolisi = "1234";
     String noAmbulance = "12345";
@@ -88,7 +92,10 @@ public class HomeFragment extends Fragment {
         pulseAnim1 = (ImageView)home_inflater.findViewById(R.id.pulseAnim1);
         pulseAnim2 = (ImageView)home_inflater.findViewById(R.id.pulseAnim2);
         safebtn = (Button)home_inflater.findViewById(R.id.safeBtn);
+        alertText = (TextView)home_inflater.findViewById(R.id.textAlert);
+        alertText2 = (TextView)home_inflater.findViewById(R.id.textAlert2);
         pulseAnimHandler = new Handler();
+
         ask_permission();
         // MAIN MENU DI KLIK 1x //
         menu.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +104,6 @@ public class HomeFragment extends Fragment {
                 animateFab();
             }
         });
-
 
         // MAIN MENU LONG PRESS //
         menu.setOnLongClickListener(new View.OnLongClickListener() {
@@ -114,6 +120,9 @@ public class HomeFragment extends Fragment {
                     // INI RUN ANIMASI PULSE NYA //
                     pulseRunnable.run();
                     safebtn.setVisibility(View.VISIBLE);
+                    alertText.setText("Please stand by");
+                    alertText2.setVisibility(View.VISIBLE);
+                    menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
                     Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception e){
@@ -168,13 +177,16 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 pulseAnimHandler.removeCallbacks(pulseRunnable);
                 safebtn.setVisibility(View.INVISIBLE);
+                alertText.setText("Long press to alert");
+                alertText2.setVisibility(View.INVISIBLE);
+                menu.setEnabled(true);
             }
         });
 
         return home_inflater;
     }
 
-    // ANIMASI MENU //
+    // ANIMASI MENU + ERROR HANDLING //
     private void animateFab(){
         if(isOpen){
             menu.startAnimation(rotateFoward);
@@ -187,6 +199,31 @@ public class HomeFragment extends Fragment {
             pemadamKebakaran.setClickable(false);
             ask_for_help.setClickable(false);
             isOpen = false;
+            menu.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(getActivity(),"MASUK LONG PRESS", LENGTH_SHORT).show();
+                    // Permission has already been granted
+                    try{
+                        Toast.makeText(getActivity(), "Masuk TRY", Toast.LENGTH_SHORT).show();
+                        msgbody = "ini pesan otomatis, jika anda menerima pesan ini berarti pemilik nomor hp ini sedang dalam bahaya " +
+                                "berikut adalah lokasi pemilik nomor hp ini : ";
+                        SmsManager smgr = SmsManager.getDefault();
+                        smgr.sendTextMessage(mobilenumber,null,msgbody,null,null);
+                        // INI RUN ANIMASI PULSE NYA //
+                        pulseRunnable.run();
+                        safebtn.setVisibility(View.VISIBLE);
+                        alertText.setText("Please stannd by");
+                        alertText2.setVisibility(View.VISIBLE);
+                        menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
+                        Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                    catch (Exception e){
+                        Toast.makeText(getActivity(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+            });
         }
         else{
             menu.startAnimation(rotateBakcward);
@@ -199,6 +236,7 @@ public class HomeFragment extends Fragment {
             pemadamKebakaran.setClickable(true);
             ask_for_help.setClickable(true);
             isOpen = true;
+            menu.setOnLongClickListener(null);
         }
     }
 

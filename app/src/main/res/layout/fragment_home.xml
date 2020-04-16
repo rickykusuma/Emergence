@@ -2,7 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorBlack">
 
 
     <RelativeLayout
@@ -11,13 +13,28 @@
 
         <TextView
             android:id="@+id/textAlert"
+            android:lines="2"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
-            android:textColor="#f06463"
+            android:textColor="@color/colorRed"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="100dp"
             android:textSize="75px"
             android:text="Long press to alert"/>
+
+        <TextView
+            android:id="@+id/textAlert2"
+            android:lines="2"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="150dp"
+            android:visibility="invisible"
+            android:textSize="50px"
+            android:text="We are currently requesting help."/>
 
 
         <ImageView
@@ -122,10 +139,12 @@
             android:id="@+id/safeBtn"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_marginBottom="100dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="100dp"
+            android:textColor="@color/colorWhite"
             android:visibility="invisible"
+            android:background="@drawable/btn_rounded"
             android:text="I'm safe"/>
 
     </RelativeLayout>
