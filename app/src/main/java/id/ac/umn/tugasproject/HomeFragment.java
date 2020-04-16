@@ -44,6 +44,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -75,7 +76,7 @@ public class HomeFragment extends Fragment {
     private boolean requestingLocationUpdates;
     private ImageView pulseAnim1, pulseAnim2;
     private Handler pulseAnimHandler;
-
+    private LocationManager mLocationManager;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,6 +97,13 @@ public class HomeFragment extends Fragment {
         alertText2 = (TextView)home_inflater.findViewById(R.id.textAlert2);
         pulseAnimHandler = new Handler();
 
+        //Get Location Services
+        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ALL_PERMISSION);
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGPS);
+
         ask_permission();
         // MAIN MENU DI KLIK 1x //
         menu.setOnClickListener(new View.OnClickListener() {
@@ -109,28 +117,24 @@ public class HomeFragment extends Fragment {
         menu.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getActivity(),"MASUK LONG PRESS", LENGTH_SHORT).show();
-                // Permission has already been granted
-                try{
-                    Toast.makeText(getActivity(), "Masuk TRY", Toast.LENGTH_SHORT).show();
-                    msgbody = "ini pesan otomatis, jika anda menerima pesan ini berarti pemilik nomor hp ini sedang dalam bahaya " +
-                            "berikut adalah lokasi pemilik nomor hp ini : ";
-                    SmsManager smgr = SmsManager.getDefault();
-                    smgr.sendTextMessage(mobilenumber,null,msgbody,null,null);
-                    // INI RUN ANIMASI PULSE NYA //
-                    pulseRunnable.run();
-                    safebtn.setVisibility(View.VISIBLE);
-                    alertText.setText("Please stand by");
-                    alertText2.setVisibility(View.VISIBLE);
-                    menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
-                    Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
-                }
-                catch (Exception e){
-                    Toast.makeText(getActivity(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
-                }
+                // INI RUN ANIMASI PULSE NYA //
+                pulseRunnable.run();
+                safebtn.setVisibility(View.VISIBLE);
+                alertText.setText("Please stand by");
+                alertText2.setVisibility(View.VISIBLE);
+                menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
+
+                //Delay Sent SMS , biar nunggu lokasi dapet dulu//
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        Send_SMS();
+                    }
+                }, 5000);   //5 seconds
                 return true;
             }
         });
+
 
         polisi.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,25 +206,20 @@ public class HomeFragment extends Fragment {
             menu.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Toast.makeText(getActivity(),"MASUK LONG PRESS", LENGTH_SHORT).show();
-                    // Permission has already been granted
-                    try{
-                        Toast.makeText(getActivity(), "Masuk TRY", Toast.LENGTH_SHORT).show();
-                        msgbody = "ini pesan otomatis, jika anda menerima pesan ini berarti pemilik nomor hp ini sedang dalam bahaya " +
-                                "berikut adalah lokasi pemilik nomor hp ini : ";
-                        SmsManager smgr = SmsManager.getDefault();
-                        smgr.sendTextMessage(mobilenumber,null,msgbody,null,null);
-                        // INI RUN ANIMASI PULSE NYA //
-                        pulseRunnable.run();
-                        safebtn.setVisibility(View.VISIBLE);
-                        alertText.setText("Please stand by");
-                        alertText2.setVisibility(View.VISIBLE);
-                        menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
-                        Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
-                    }
-                    catch (Exception e){
-                        Toast.makeText(getActivity(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
-                    }
+                    // INI RUN ANIMASI PULSE NYA //
+                    pulseRunnable.run();
+                    safebtn.setVisibility(View.VISIBLE);
+                    alertText.setText("Please stand by");
+                    alertText2.setVisibility(View.VISIBLE);
+                    menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
+
+                    //Delay Sent SMS , biar nunggu lokasi dapet dulu//
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            Send_SMS();
+                        }
+                    }, 10000);   //delay for 10 seconds
                     return true;
                 }
             });
@@ -289,9 +288,53 @@ public class HomeFragment extends Fragment {
         // ask permission of location everytime
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ALL_PERMISSION);
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListenerGPS);
         }
 
     }
+    //Listener buat Location
+    LocationListener locationListenerGPS = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            Latitude = location.getLatitude();
+            Longitude = location.getLongitude();
+            Log.d("onLocateChange","Lat = "+Latitude);
+
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.d("Latitude","disable");
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.d("Latitude","enable");
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.d("Latitude","status");
+        }
+    };
+
+    //Kirim SMS yang udah di delay 10 detik
+    private void Send_SMS(){
+        try {
+            Log.d("send sms","Lat = "+Latitude);
+            msgbody = "ini adalah pesan OTOMATIS. jika anda menerima pesan ini berarti pemilik nomor hp ini sedang dalam BAHAYA.Lokasi pemilik nomor : ";
+            msgbody+=("http://maps.google.com?q="+Latitude+","+Longitude);
+            SmsManager manager;
+            SmsManager smgr = SmsManager.getDefault();
+            ArrayList<String> divideBody = smgr.divideMessage(msgbody);
+            smgr.sendMultipartTextMessage(mobilenumber, null, divideBody, null, null);
+            Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 
 }
