@@ -213,7 +213,7 @@ public class HomeFragment extends Fragment {
                         // INI RUN ANIMASI PULSE NYA //
                         pulseRunnable.run();
                         safebtn.setVisibility(View.VISIBLE);
-                        alertText.setText("Please stannd by");
+                        alertText.setText("Please stand by");
                         alertText2.setVisibility(View.VISIBLE);
                         menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
                         Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
