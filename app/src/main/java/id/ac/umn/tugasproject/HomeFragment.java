@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment {
     Button safebtn;
     FloatingActionButton menu,polisi,rumahSakit,pemadamKebakaran, ask_for_help;
     Animation fabOpen, fabClose, rotateFoward, rotateBakcward;
-    TextView alertText;
+    TextView alertText,txtDanger, txtPolisi, txtRumahSakit, txtPemadam,txtAskForHelp;
     boolean isOpen = false;
     String noPolisi = "1234";
     String noAmbulance = "12345";
@@ -94,6 +94,11 @@ public class HomeFragment extends Fragment {
         pulseAnim2 = (ImageView)home_inflater.findViewById(R.id.pulseAnim2);
         safebtn = (Button)home_inflater.findViewById(R.id.safeBtn);
         alertText = (TextView)home_inflater.findViewById(R.id.textAlert);
+        txtDanger = (TextView)home_inflater.findViewById(R.id.txtDanger);
+        txtPolisi = (TextView)home_inflater.findViewById(R.id.txtPolisi);
+        txtPemadam = (TextView)home_inflater.findViewById(R.id.txtPemadam);
+        txtRumahSakit = (TextView)home_inflater.findViewById(R.id.txtRumahSakit);
+        txtAskForHelp = (TextView)home_inflater.findViewById(R.id.txt_ask_for_help);
         pulseAnimHandler = new Handler();
 
         //Get Location Services
@@ -119,6 +124,7 @@ public class HomeFragment extends Fragment {
                 // INI RUN ANIMASI PULSE NYA //
                 pulseRunnable.run();
                 safebtn.setVisibility(View.VISIBLE);
+                txtDanger.setVisibility(View.VISIBLE);
                 alertText.setText("We are currently requesting for help");
                 menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
 
@@ -179,6 +185,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 pulseAnimHandler.removeCallbacks(pulseRunnable);
                 safebtn.setVisibility(View.INVISIBLE);
+                txtDanger.setVisibility(View.INVISIBLE);
                 alertText.setText("Long press to alert");
                 menu.setEnabled(true);
             }
@@ -195,6 +202,10 @@ public class HomeFragment extends Fragment {
             rumahSakit.startAnimation(fabClose);
             pemadamKebakaran.startAnimation(fabClose);
             ask_for_help.startAnimation(fabClose);
+            txtAskForHelp.startAnimation(fabClose);
+            txtRumahSakit.startAnimation(fabClose);
+            txtPemadam.startAnimation(fabClose);
+            txtPolisi.startAnimation(fabClose);
             polisi.setClickable(false);
             rumahSakit.setClickable(false);
             pemadamKebakaran.setClickable(false);
@@ -226,6 +237,10 @@ public class HomeFragment extends Fragment {
             rumahSakit.startAnimation(fabOpen);
             pemadamKebakaran.startAnimation(fabOpen);
             ask_for_help.startAnimation(fabOpen);
+            txtAskForHelp.startAnimation(fabOpen);
+            txtRumahSakit.startAnimation(fabOpen);
+            txtPemadam.startAnimation(fabOpen);
+            txtPolisi.startAnimation(fabOpen);
             polisi.setClickable(true);
             rumahSakit.setClickable(true);
             pemadamKebakaran.setClickable(true);
