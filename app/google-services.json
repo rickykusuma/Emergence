@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1079717199113",
+    "firebase_url": "https://emergence-3a9a7.firebaseio.com",
+    "project_id": "emergence-3a9a7",
+    "storage_bucket": "emergence-3a9a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079717199113:android:d7270693033d324442e7d8",
+        "android_client_info": {
+          "package_name": "id.ac.umn.tugasproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1079717199113-5s6ndl3h1i7loid04l2ue6nd4t0hdtsg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.ac.umn.tugasproject",
+            "certificate_hash": "fb778c83e74c5ad7df0e73e4e419248a621f51b7"
+          }
+        },
+        {
+          "client_id": "1079717199113-vivrrg1ltk2ak0c0s3i86rqmlnv8hdi2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTqPdgxH2o4-VS7CYGOaiyvbiHbcl3FG4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1079717199113-vivrrg1ltk2ak0c0s3i86rqmlnv8hdi2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
