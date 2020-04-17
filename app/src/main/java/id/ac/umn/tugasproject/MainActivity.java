@@ -19,14 +19,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        BottomNavigationView bottomNav = findViewById(R.id.btnNavigation);
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
-
-        HomeFragment mHomeFragment = new HomeFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container,mHomeFragment).commit();
+        startActivity(new Intent(MainActivity.this,LoginActivity.class));
+//        setContentView(R.layout.activity_main);
+//
+//        BottomNavigationView bottomNav = findViewById(R.id.btnNavigation);
+//        bottomNav.setOnNavigationItemSelectedListener(navListener);
+//
+//        HomeFragment mHomeFragment = new HomeFragment();
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.fragment_container,mHomeFragment).commit();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
