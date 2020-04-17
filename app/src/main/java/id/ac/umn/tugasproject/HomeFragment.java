@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment {
     Button safebtn;
     FloatingActionButton menu,polisi,rumahSakit,pemadamKebakaran, ask_for_help;
     Animation fabOpen, fabClose, rotateFoward, rotateBakcward;
-    TextView alertText, alertText2;
+    TextView alertText;
     boolean isOpen = false;
     String noPolisi = "1234";
     String noAmbulance = "12345";
@@ -94,7 +94,6 @@ public class HomeFragment extends Fragment {
         pulseAnim2 = (ImageView)home_inflater.findViewById(R.id.pulseAnim2);
         safebtn = (Button)home_inflater.findViewById(R.id.safeBtn);
         alertText = (TextView)home_inflater.findViewById(R.id.textAlert);
-        alertText2 = (TextView)home_inflater.findViewById(R.id.textAlert2);
         pulseAnimHandler = new Handler();
 
         //Get Location Services
@@ -120,8 +119,7 @@ public class HomeFragment extends Fragment {
                 // INI RUN ANIMASI PULSE NYA //
                 pulseRunnable.run();
                 safebtn.setVisibility(View.VISIBLE);
-                alertText.setText("Please stand by");
-                alertText2.setVisibility(View.VISIBLE);
+                alertText.setText("We are currently requesting for help");
                 menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
 
                 //Delay Sent SMS , biar nunggu lokasi dapet dulu//
@@ -182,7 +180,6 @@ public class HomeFragment extends Fragment {
                 pulseAnimHandler.removeCallbacks(pulseRunnable);
                 safebtn.setVisibility(View.INVISIBLE);
                 alertText.setText("Long press to alert");
-                alertText2.setVisibility(View.INVISIBLE);
                 menu.setEnabled(true);
             }
         });
@@ -209,8 +206,7 @@ public class HomeFragment extends Fragment {
                     // INI RUN ANIMASI PULSE NYA //
                     pulseRunnable.run();
                     safebtn.setVisibility(View.VISIBLE);
-                    alertText.setText("Please stand by");
-                    alertText2.setVisibility(View.VISIBLE);
+                    alertText.setText("We are currently requesting for help");
                     menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
 
                     //Delay Sent SMS , biar nunggu lokasi dapet dulu//
