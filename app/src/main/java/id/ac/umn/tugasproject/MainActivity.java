@@ -19,11 +19,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startActivity(new Intent(MainActivity.this,LoginActivity.class));
-//        setContentView(R.layout.activity_main);
+        //startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        setContentView(R.layout.activity_main);
 //
-//        BottomNavigationView bottomNav = findViewById(R.id.btnNavigation);
-//        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        BottomNavigationView bottomNav = findViewById(R.id.btnNavigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
 //
 //        HomeFragment mHomeFragment = new HomeFragment();
 //        FragmentManager fragmentManager = getSupportFragmentManager();
