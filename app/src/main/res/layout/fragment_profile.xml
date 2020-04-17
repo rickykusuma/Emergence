@@ -200,6 +200,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="100dp"
             android:background="@drawable/gradientbackground"
             android:text="EDIT PROFILE"/>
 
