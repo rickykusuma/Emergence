@@ -1,6 +1,7 @@
 package id.ac.umn.tugasproject;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -77,6 +78,7 @@ public class RegisterFragment extends Fragment implements  View.OnClickListener{
                     Toast.makeText(getContext(), "Authentication successful.   ",Toast.LENGTH_SHORT).show();
                     FirebaseUser user = mAuth.getCurrentUser();
                     progressDialog.dismiss();
+                    startActivity(new Intent(getContext(),MainActivity.class));
                 } else {
                     // If sign in fails, display a message to the user.
                     Toast.makeText(getContext(), "Authentication failed.",Toast.LENGTH_SHORT).show();

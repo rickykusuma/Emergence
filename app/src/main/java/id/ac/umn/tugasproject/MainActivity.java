@@ -11,23 +11,30 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    private FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startActivity(new Intent(MainActivity.this,LoginActivity.class));
-//        setContentView(R.layout.activity_main);
-//
-//        BottomNavigationView bottomNav = findViewById(R.id.btnNavigation);
-//        bottomNav.setOnNavigationItemSelectedListener(navListener);
-//
-//        HomeFragment mHomeFragment = new HomeFragment();
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.fragment_container,mHomeFragment).commit();
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        if(firebaseAuth.getCurrentUser() != null){
+            setContentView(R.layout.activity_main);
+
+            BottomNavigationView bottomNav = findViewById(R.id.btnNavigation);
+            bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+            HomeFragment mHomeFragment = new HomeFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container,mHomeFragment).commit();
+        }else{
+            startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        }
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
