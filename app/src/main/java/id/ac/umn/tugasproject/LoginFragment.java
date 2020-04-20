@@ -27,7 +27,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     private Button buttonSignIn;
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
-
     public LoginFragment() {
         // Required empty public constructor
     }

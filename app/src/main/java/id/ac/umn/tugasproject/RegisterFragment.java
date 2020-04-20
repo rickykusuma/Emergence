@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterFragment extends Fragment implements  View.OnClickListener{
     private EditText name;
@@ -31,6 +33,9 @@ public class RegisterFragment extends Fragment implements  View.OnClickListener{
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
     private Button buttonRegister;
+    private  DatabaseReference databaseUser;
+//    private DatabaseReference databaseReference;
+    private FirebaseDatabase database;
     public RegisterFragment() {
         // Required empty public constructor
     }
@@ -39,10 +44,19 @@ public class RegisterFragment extends Fragment implements  View.OnClickListener{
                              Bundle savedInstanceState) {
         View Register_inflater = inflater.inflate(R.layout.fragment_register, container, false);
         mAuth = FirebaseAuth.getInstance();
+//        databaseReference = FirebaseDatabase.getInstance().getReference();
+        database = FirebaseDatabase.getInstance();
+        databaseUser = FirebaseDatabase.getInstance().getReference("User");
         FirebaseUser currentUser = mAuth.getCurrentUser();
         progressDialog = new ProgressDialog(getContext());
 
         buttonRegister = (Button) Register_inflater.findViewById(R.id.btn_register);
+
+
+        name = (EditText) Register_inflater.findViewById(R.id.et_name);
+        address = (EditText) Register_inflater.findViewById(R.id.et_address);
+        phone = (EditText) Register_inflater.findViewById(R.id.et_phone);
+
 
         editTextEmail = (EditText) Register_inflater.findViewById(R.id.et_email);
         editTextPassword = (EditText) Register_inflater.findViewById(R.id.et_password);
@@ -57,7 +71,22 @@ public class RegisterFragment extends Fragment implements  View.OnClickListener{
             registerUser();
         }
     }
+    public void saveUserInformation(){
+        String nama = name.getText().toString().trim();
+        String add = address.getText().toString().trim();
+        String nomor = phone.getText().toString().trim();
+        String e_mail = editTextEmail.getText().toString().trim();
 
+        User_Information user_info = new User_Information(nama,add,nomor,e_mail);
+        String id = databaseUser.push().getKey();
+        databaseUser.child(id).setValue(user_info);
+
+
+//        FirebaseUser user = mAuth.getCurrentUser();
+//
+//        database.getReference(user.getUid()).setValue(user_info);
+
+    }
     private void registerUser() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
@@ -78,6 +107,7 @@ public class RegisterFragment extends Fragment implements  View.OnClickListener{
                     Toast.makeText(getContext(), "Authentication successful.   ",Toast.LENGTH_SHORT).show();
                     FirebaseUser user = mAuth.getCurrentUser();
                     progressDialog.dismiss();
+                    saveUserInformation();
                     startActivity(new Intent(getContext(),MainActivity.class));
                 } else {
                     // If sign in fails, display a message to the user.
