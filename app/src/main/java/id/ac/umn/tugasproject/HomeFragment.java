@@ -190,7 +190,7 @@ public class HomeFragment extends Fragment {
     // ANIMASI MENU + ERROR HANDLING //
     private void animateFab(){
         if(isOpen){
-            menu.startAnimation(rotateFoward);
+            //menu.startAnimation(rotateFoward);
             polisi.startAnimation(fabClose);
             rumahSakit.startAnimation(fabClose);
             pemadamKebakaran.startAnimation(fabClose);
@@ -221,7 +221,7 @@ public class HomeFragment extends Fragment {
             });
         }
         else{
-            menu.startAnimation(rotateBakcward);
+            //menu.startAnimation(rotateBakcward);
             polisi.startAnimation(fabOpen);
             rumahSakit.startAnimation(fabOpen);
             pemadamKebakaran.startAnimation(fabOpen);
