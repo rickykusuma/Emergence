@@ -20,8 +20,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class RegisterFragment extends Fragment implements  View.OnClickListener{
     private EditText name;
@@ -102,18 +107,23 @@ public class RegisterFragment extends Fragment implements  View.OnClickListener{
         mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                progressDialog.dismiss();
                 if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Toast.makeText(getContext(), "Authentication successful.   ",Toast.LENGTH_SHORT).show();
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    progressDialog.dismiss();
-                    saveUserInformation();
-                    startActivity(new Intent(getContext(),MainActivity.class));
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Toast.makeText(getContext(), "Authentication failed.",Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
+                    mAuth.getCurrentUser().sendEmailVerification()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getContext(), "Registered successfully. Please verify your email address",Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(getContext(), "Register failed, please check your credentials",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                } else{
+                    Toast.makeText(getContext(), "Register failed, please check your credentials",Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
     }

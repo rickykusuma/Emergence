@@ -75,7 +75,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     progressDialog.dismiss();
-                    startActivity(new Intent(getActivity(),MainActivity.class));
+                    if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                        startActivity(new Intent(getActivity(),MainActivity.class));
+                    }else{
+                        Toast.makeText(getContext(),"Please verify your email address",Toast.LENGTH_LONG).show();
+                    }
                 }else{
                     progressDialog.dismiss();
                     Toast.makeText(getContext(),"Invalid E-mail or Password, Please Try Again ...",Toast.LENGTH_LONG).show();
