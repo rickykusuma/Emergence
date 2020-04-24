@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 
 import java.util.ArrayList;
 
@@ -18,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
+
 
         AuthenticationPagerAdapter pagerAdapter = new AuthenticationPagerAdapter(getSupportFragmentManager());
         pagerAdapter.addFragmet(new LoginFragment());
@@ -43,6 +46,17 @@ public class LoginActivity extends AppCompatActivity {
 
         void addFragmet(Fragment fragment) {
             fragmentList.add(fragment);
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        ViewPager viewPager = findViewById(R.id.viewPager);
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            viewPager.setCurrentItem(0, true);
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
         }
     }
 }

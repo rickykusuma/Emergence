@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -54,5 +55,16 @@ public class MainActivity extends AppCompatActivity {
                 return true;
                 }
             };
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        HomeFragment mHomeFragment = new HomeFragment();
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container,mHomeFragment).commit();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
 
 }

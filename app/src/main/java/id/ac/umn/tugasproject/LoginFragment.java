@@ -48,6 +48,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         return login_inflater;
     }
 
+
     @Override
     public void onClick(View v) {
         if(v == buttonSignIn){
