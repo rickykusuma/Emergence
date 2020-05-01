@@ -3,6 +3,7 @@ package id.ac.umn.tugasproject;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -142,6 +143,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             String personFamilyName = account.getFamilyName();
             String personEmail = account.getEmail();
             String personId = account.getId();
+            Uri personPhoto = account.getPhotoUrl();
 
             Toast.makeText(getContext(),personName + personEmail ,Toast.LENGTH_SHORT).show();
         }
