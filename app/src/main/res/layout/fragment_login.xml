@@ -57,13 +57,23 @@
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/et_password"
         android:background="@drawable/btn_custom"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="15dp"
         android:textColor="@android:color/white"
-        android:text="@string/login"/>
+        android:text="@string/login"
+        android:layout_below="@id/et_password"/>
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/btn_login"/>
+
 
     <ImageView
         android:layout_width="30dp"
