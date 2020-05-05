@@ -86,7 +86,6 @@ public class RegisterFragment extends Fragment implements  View.OnClickListener{
         String id = databaseUser.push().getKey();
         databaseUser.child(id).setValue(user_info);
 
-
 //        FirebaseUser user = mAuth.getCurrentUser();
 //
 //        database.getReference(user.getUid()).setValue(user_info);

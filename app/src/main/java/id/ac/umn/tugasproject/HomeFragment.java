@@ -9,10 +9,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.Image;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,22 +42,34 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class HomeFragment extends Fragment {
-
-    private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1;
-    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int MY_PERMISSIONS_REQUEST_ALL_PERMISSION = 1;
+    private static final int MY_PERMISSIONS_REQUEST_ALL_PERMISSION = 200;
     Button safebtn;
     FloatingActionButton menu,polisi,rumahSakit,pemadamKebakaran, ask_for_help;
     Animation fabOpen, fabClose, rotateFoward, rotateBakcward;
@@ -67,6 +81,8 @@ public class HomeFragment extends Fragment {
     String mobilenumber = "1234";
     String msgbody;
     Double Latitude,Longitude;
+    boolean isNotSafe= false;
+    boolean isRecording = false;
     protected LocationManager locationManager;
     protected LocationListener locationListener;
     private LocationCallback locationCallback;
@@ -77,6 +93,12 @@ public class HomeFragment extends Fragment {
     private ImageView pulseAnim1, pulseAnim2;
     private Handler pulseAnimHandler;
     private LocationManager mLocationManager;
+    private MediaRecorder recorder = null;
+    private static String mAudiofileName = null;
+    private StorageReference mAudioRef;
+    FirebaseAuth auth;
+    String currdir;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,14 +118,14 @@ public class HomeFragment extends Fragment {
         alertText = (TextView)home_inflater.findViewById(R.id.textAlert);
         pulseAnimHandler = new Handler();
 
-        //Get Location Services
-        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ALL_PERMISSION);
-        }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGPS);
+        //set audio filename to current date
+        currdir = getActivity().getExternalFilesDir(null).getAbsolutePath();
+        String date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(new Date());
+        mAudiofileName = "/"+date+".mp3";
 
-        ask_permission();
+        ask_Location_permission();
+        ask_call_permission();
+
         // MAIN MENU DI KLIK 1x //
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,11 +139,12 @@ public class HomeFragment extends Fragment {
             @Override
             public boolean onLongClick(View v) {
                 // INI RUN ANIMASI PULSE NYA //
+                ask_sms_audio_permission();
                 pulseRunnable.run();
                 safebtn.setVisibility(View.VISIBLE);
-                alertText.setText("We are currently requesting for help");
+                alertText.setText("We are currently requesting for help and Record audio from microphone for your safety");
                 menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
-
+                isNotSafe = true;
                 //Delay Sent SMS , biar nunggu lokasi dapet dulu//
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -177,14 +200,67 @@ public class HomeFragment extends Fragment {
         safebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isRecording){
+                    stopRecording();
+                }
                 pulseAnimHandler.removeCallbacks(pulseRunnable);
                 safebtn.setVisibility(View.INVISIBLE);
                 alertText.setText("Long press to alert");
+                isNotSafe = false;
                 menu.setEnabled(true);
             }
         });
 
         return home_inflater;
+    }
+
+    private void Upload_to_Firebase_Storage(String mAudioFullPath) {
+        Uri file = Uri.fromFile(new File(mAudioFullPath));
+        UploadTask uploadTask;
+        auth = FirebaseAuth.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        Log.d("FireBaseUID","UID = "+auth.getCurrentUser().getUid());
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        mAudioRef = storageRef.child("/audios/" + uid + "/"+mAudiofileName);
+        uploadTask = mAudioRef.putFile(file);
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+            }
+        });
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return mAudioRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    Log.d("SU_FB_STR","URI Download : "+downloadUri);
+                } else {
+                    // Handle failures
+                    // ...
+                }
+            }
+        });
+        Log.d("SU_FB_STR","Audio files name : "+mAudiofileName);
+        Log.d("SU_FB_STR","Audio Storage Ref : "+mAudioRef);
     }
 
     // ANIMASI MENU + ERROR HANDLING //
@@ -208,14 +284,14 @@ public class HomeFragment extends Fragment {
                     safebtn.setVisibility(View.VISIBLE);
                     alertText.setText("We are currently requesting for help");
                     menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
-
+                    isNotSafe = true;
                     //Delay Sent SMS , biar nunggu lokasi dapet dulu//
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             Send_SMS();
                         }
-                    }, 10000);   //delay for 10 seconds
+                    }, 5000);   //delay for 5 seconds
                     return true;
                 }
             });
@@ -263,73 +339,126 @@ public class HomeFragment extends Fragment {
     };
 
 
-    public void ask_permission() {
-        // Ask Permission for first time
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+    public void ask_call_permission() {
+        // Ask Permission for first timeManifest.permission.RECORD_AUDIO
+
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CALL_PHONE) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.SEND_SMS)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CALL_PHONE)) {
                 // sees the explanation, try again to request the permission.
                 Toast.makeText(getActivity(), "We Need Your Permission to Fully Operating", LENGTH_SHORT).show();
             } else {
                 // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ALL_PERMISSION);
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_ALL_PERMISSION);
             }
         } else {
             // Permission has already been granted
         }
-
-        // ask permission of location everytime
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ALL_PERMISSION);
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListenerGPS);
-        }
-
     }
-    //Listener buat Location
-    LocationListener locationListenerGPS = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            Latitude = location.getLatitude();
-            Longitude = location.getLongitude();
-            Log.d("onLocateChange","Lat = "+Latitude);
+    public void ask_sms_audio_permission() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.RECORD_AUDIO) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.SEND_SMS)) {
+                // sees the explanation, try again to request the permission.
+                Toast.makeText(getActivity(), "We Need Your Permission to Fully Operating", LENGTH_SHORT).show();
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_ALL_PERMISSION);
+            }
+        } else {
+            // Permission has already been granted
+        }
+    }
+    public void ask_Location_permission() {
 
-
+        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ALL_PERMISSION);
         }
 
-        @Override
-        public void onProviderDisabled(String provider) {
-            Log.d("Latitude","disable");
+        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE );
+        boolean statusOfGPS = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if(!statusOfGPS){
+            Toast.makeText(getActivity(), "We Cant Fully Operated without Location", LENGTH_SHORT).show();
+            Intent intentAskGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intentAskGPS);
         }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Latitude = location.getLatitude();
+                Longitude = location.getLongitude();
+                Log.d("onLocateChange","Lat = "+Latitude);
 
-        @Override
-        public void onProviderEnabled(String provider) {
-            Log.d("Latitude","enable");
-        }
+            }
 
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            Log.d("Latitude","status");
-        }
-    };
+            @Override
+            public void onProviderDisabled(String provider) {
+                Log.d("Latitude","disable");
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                Log.d("Latitude","enable");
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                Log.d("Latitude","status");
+            }
+        });
+    }
 
     //Kirim SMS yang udah di delay 10 detik
     private void Send_SMS(){
         try {
-            Log.d("send sms","Lat = "+Latitude);
-            msgbody = "ini adalah pesan OTOMATIS. jika anda menerima pesan ini berarti pemilik nomor hp ini sedang dalam BAHAYA.Lokasi pemilik nomor : ";
-            msgbody+=("http://maps.google.com?q="+Latitude+","+Longitude);
-            SmsManager manager;
-            SmsManager smgr = SmsManager.getDefault();
-            ArrayList<String> divideBody = smgr.divideMessage(msgbody);
-            smgr.sendMultipartTextMessage(mobilenumber, null, divideBody, null, null);
-            Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
+            if(isNotSafe==true){
+                startRecording();
+                Log.d("send sms","Lat = "+Latitude);
+                msgbody = "ini adalah pesan OTOMATIS. jika anda menerima pesan ini berarti pemilik nomor hp ini sedang dalam BAHAYA.Lokasi pemilik nomor : ";
+                msgbody+=("http://maps.google.com?q="+Latitude+","+Longitude);
+                SmsManager manager;
+                SmsManager smgr = SmsManager.getDefault();
+                ArrayList<String> divideBody = smgr.divideMessage(msgbody);
+                smgr.sendMultipartTextMessage(mobilenumber, null, divideBody, null, null);
+                Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             Toast.makeText(getActivity(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void startRecording() {
+        isRecording = true;
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        recorder.setOutputFile(currdir+mAudiofileName);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        try {
+            recorder.prepare();
+        } catch (IOException e) {
+            Log.e("Start Recording Audio", "prepare() failed");
+
+        }
+        recorder.start();
+        Log.d("Start Recording Audio","Lagi recording bareng ariel");
+    }
+
+    private void stopRecording() {
+        isRecording = false;
+        recorder.stop();
+        recorder.release();
+        recorder = null;
+        Log.d("Stop Recording Audio","Cut Tari nya udahan");
+        Log.d("Stop Recording Audio","Lokasi File = "+currdir+mAudiofileName);
+        String mAudioFullPath  = currdir+mAudiofileName;
+        Upload_to_Firebase_Storage(mAudioFullPath);
+    }
+
 
 
 }
