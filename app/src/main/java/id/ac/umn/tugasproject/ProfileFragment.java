@@ -35,6 +35,7 @@ public class ProfileFragment extends Fragment {
     private DatabaseReference databaseUser;
     private FirebaseDatabase database;
     private static final String user = "user";
+    private String uEmail;
 
     @Nullable
     @Override
@@ -47,30 +48,16 @@ public class ProfileFragment extends Fragment {
         tvEmail = (TextView)profile_inflater.findViewById(R.id.tvEmail);
         buttonLogout = (Button)profile_inflater.findViewById(R.id.logout);
 
-        database = FirebaseDatabase.getInstance();
-        databaseUser = database.getReference(user);
-
-        // NGAMBIL USER YG LOGIN SKRNG //
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        uEmail = firebaseUser.getEmail();
+        Log.d("MASUK","EMAIL = " + uEmail  );
+
+
 
         if (firebaseUser != null) {
-            // User is signed in //
             // INI NGAMBIL DATANYAA DARI FIREBASE LIVE DATABASE //
-            databaseUser.addValueEventListener(new ValueEventListener() {
-                String fName;
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                            tvName.setText(ds.child("fullname").getValue(String.class));
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    // Failed to read value
-                }
-            });
+            loadUserInfo();
 
             // GOOGLE PROFILE //
             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
@@ -102,9 +89,29 @@ public class ProfileFragment extends Fragment {
             startActivity(new Intent(getActivity(),LoginActivity.class));
         }
 
-
-
-
         return profile_inflater;
+    }
+
+    public void loadUserInfo(){
+        database = FirebaseDatabase.getInstance();
+        databaseUser = database.getReference(user);
+
+        databaseUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds:dataSnapshot.getChildren()){
+                        if(ds.child("email").getValue().equals(uEmail)){
+                            tvName.setText(ds.child("fullname").getValue(String.class));
+                            Log.d("MASUK","NAMA = " + ds.child("fullname").getValue(String.class) );
+                        }
+
+                    }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

@@ -133,7 +133,7 @@ public class HomeFragment extends Fragment {
         // KALO USER NYA BLM LOG OUT //
         if(firebaseUser != null ){
 
-            Log.d("MASUK","USER SKRNG ADLAAH" + firebaseUser);
+            Log.d("MASUK","USER DI HOME  ADLAAH" + firebaseUser);
 
             menu.setOnClickListener(new View.OnClickListener() {
                 @Override
