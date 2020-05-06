@@ -30,6 +30,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -42,6 +44,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
     GoogleSignInClient mGoogleSignInClient;
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference databaseUser;
+    private FirebaseDatabase database;
+    private static final String USER = "user";
     private int RC_SIGN_IN;
 
 
@@ -69,6 +76,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+
+        database = FirebaseDatabase.getInstance();
+        databaseUser = database.getReference(USER);
+        mAuth = FirebaseAuth.getInstance();
 
         return login_inflater;
 
@@ -170,7 +181,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 if(task.isSuccessful()){
                     progressDialog.dismiss();
                     if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                        startActivity(new Intent(getActivity(),MainActivity.class));
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Intent homeFragment = new Intent(getContext(), MainActivity.class);
+                        startActivity(homeFragment);
                     }else{
                         Toast.makeText(getContext(),"Please verify your email address",Toast.LENGTH_LONG).show();
                     }
@@ -181,6 +194,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             }
         });
     }
+
+
 }
 
 

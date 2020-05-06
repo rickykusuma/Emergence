@@ -53,6 +53,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -126,90 +127,103 @@ public class HomeFragment extends Fragment {
         ask_Location_permission();
         ask_call_permission();
 
-        // MAIN MENU DI KLIK 1x //
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animateFab();
-            }
-        });
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-        // MAIN MENU LONG PRESS //
-        menu.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                // INI RUN ANIMASI PULSE NYA //
-                ask_sms_audio_permission();
-                pulseRunnable.run();
-                safebtn.setVisibility(View.VISIBLE);
-                alertText.setText("We are currently requesting for help and Record audio from microphone for your safety");
-                menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
-                isNotSafe = true;
-                //Delay Sent SMS , biar nunggu lokasi dapet dulu//
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        Send_SMS();
-                    }
-                }, 5000);   //5 seconds
-                return true;
-            }
-        });
+        // KALO USER NYA BLM LOG OUT //
+        if(firebaseUser != null ){
 
+            Log.d("MASUK","USER SKRNG ADLAAH" + firebaseUser);
 
-        polisi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animateFab();
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + noPolisi));
-                startActivity(intent);
-                Toast.makeText(getActivity(), "Calling Police Station", LENGTH_SHORT).show();
-            }
-        });
-
-        rumahSakit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animateFab();
-                // Permission has already been granted
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + noAmbulance));
-                startActivity(intent);
-                Toast.makeText(getActivity(), "Calling Ambulance", LENGTH_SHORT).show();
-            }
-        });
-
-        pemadamKebakaran.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animateFab();
-                // Permission has already been granted
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + noPemadam));
-                startActivity(intent);
-                Toast.makeText(getActivity(), "Calling Pemadam Kebakaran", LENGTH_SHORT).show();
-            }
-        });
-
-        ask_for_help.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animateFab();
-                Toast.makeText(getActivity(), "TEST MASUK ASK FOR HELP", LENGTH_SHORT).show();
-            }
-        });
-
-        safebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isRecording){
-                    stopRecording();
+            menu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    animateFab();
                 }
-                pulseAnimHandler.removeCallbacks(pulseRunnable);
-                safebtn.setVisibility(View.INVISIBLE);
-                alertText.setText("Long press to alert");
-                isNotSafe = false;
-                menu.setEnabled(true);
-            }
-        });
+            });
+
+            // MAIN MENU LONG PRESS //
+            menu.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    // INI RUN ANIMASI PULSE NYA //
+                    ask_sms_audio_permission();
+                    pulseRunnable.run();
+                    safebtn.setVisibility(View.VISIBLE);
+                    alertText.setText("We are currently requesting for help and Record audio from microphone for your safety");
+                    menu.setEnabled(false); //  biar gabisa di klik lagi supaya main menu ga kebuka
+                    isNotSafe = true;
+                    //Delay Sent SMS , biar nunggu lokasi dapet dulu//
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            Send_SMS();
+                        }
+                    }, 5000);   //5 seconds
+                    return true;
+                }
+            });
+
+
+            polisi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    animateFab();
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + noPolisi));
+                    startActivity(intent);
+                    Toast.makeText(getActivity(), "Calling Police Station", LENGTH_SHORT).show();
+                }
+            });
+
+            rumahSakit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    animateFab();
+                    // Permission has already been granted
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + noAmbulance));
+                    startActivity(intent);
+                    Toast.makeText(getActivity(), "Calling Ambulance", LENGTH_SHORT).show();
+                }
+            });
+
+            pemadamKebakaran.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    animateFab();
+                    // Permission has already been granted
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + noPemadam));
+                    startActivity(intent);
+                    Toast.makeText(getActivity(), "Calling Pemadam Kebakaran", LENGTH_SHORT).show();
+                }
+            });
+
+            ask_for_help.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    animateFab();
+                    Toast.makeText(getActivity(), "TEST MASUK ASK FOR HELP", LENGTH_SHORT).show();
+                }
+            });
+
+            safebtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isRecording){
+                        stopRecording();
+                    }
+                    pulseAnimHandler.removeCallbacks(pulseRunnable);
+                    safebtn.setVisibility(View.INVISIBLE);
+                    alertText.setText("Long press to alert");
+                    isNotSafe = false;
+                    menu.setEnabled(true);
+                }
+            });
+
+        }
+        // GAAADA USER YG LAGI LOGIN //
+        else {
+            startActivity(new Intent(getActivity(),LoginActivity.class));
+        }
 
         return home_inflater;
     }
