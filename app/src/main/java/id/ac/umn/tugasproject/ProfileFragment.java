@@ -19,7 +19,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +29,7 @@ import com.squareup.picasso.Picasso;
 public class ProfileFragment extends Fragment {
     private Button buttonLogout;
     private ImageView ivProfile;
-    private TextView tvName,tvEmail;
+    private TextView tvName,tvEmail,phoneNumb;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseUser;
     private FirebaseDatabase database;
@@ -46,6 +45,7 @@ public class ProfileFragment extends Fragment {
         ivProfile = (ImageView) profile_inflater.findViewById(R.id.ivProfile);
         tvName = (TextView) profile_inflater.findViewById(R.id.tvName);
         tvEmail = (TextView)profile_inflater.findViewById(R.id.tvEmail);
+        phoneNumb = (TextView)profile_inflater.findViewById(R.id.phoneNumb);
         buttonLogout = (Button)profile_inflater.findViewById(R.id.logout);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -102,9 +102,9 @@ public class ProfileFragment extends Fragment {
                     for (DataSnapshot ds:dataSnapshot.getChildren()){
                         if(ds.child("email").getValue().equals(uEmail)){
                             tvName.setText(ds.child("fullname").getValue(String.class));
-                            Log.d("MASUK","NAMA = " + ds.child("fullname").getValue(String.class) );
+                            tvEmail.setText(uEmail);
+                            phoneNumb.setText(ds.child("phone").getValue(String.class));
                         }
-
                     }
             }
 

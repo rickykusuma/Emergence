@@ -6,6 +6,7 @@ public class User {
     private String fullname;
     private String phone;
     private String address;
+    private String bloodType;
 
     public User() {
 
@@ -17,12 +18,37 @@ public class User {
     }
 
 
-    public User(String email, String password, String fullname, String phone, String address) {
+    public User(String email, String password, String fullname, String phone, String address, String bloodType) {
         this.email = email;
         this.password = password;
         this.fullname = fullname;
         this.phone = phone;
         this.address = address;
+        this.bloodType = bloodType;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getBloodType() {
+        return bloodType;
     }
 
     public void setEmail(String email) {
@@ -45,23 +71,7 @@ public class User {
         this.address = address;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getFullname() {
-        return fullname;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getAddress() {
-        return address;
+    public void setBloodType(String bloodType) {
+        this.bloodType = bloodType;
     }
 }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,7 +38,7 @@ public class RegisterFragment extends Fragment {
     private EditText editTextRePassword;
     private ProgressDialog progressDialog;
     private Button buttonRegister;
-
+    private EditText bloodType;
     private FirebaseAuth mAuth;
     private  DatabaseReference databaseUser;
     private FirebaseDatabase database;
@@ -59,6 +60,7 @@ public class RegisterFragment extends Fragment {
         editTextEmail = (EditText) Register_inflater.findViewById(R.id.et_email);
         editTextPassword = (EditText) Register_inflater.findViewById(R.id.et_password);
         editTextRePassword = (EditText) Register_inflater.findViewById(R.id.et_repassword);
+        bloodType = (EditText) Register_inflater.findViewById(R.id.bloodType);
 
 
         database = FirebaseDatabase.getInstance();
@@ -70,20 +72,42 @@ public class RegisterFragment extends Fragment {
             public void onClick(View v) {
                 String email = editTextEmail.getText().toString().trim();
                 String password = editTextPassword.getText().toString().trim();
-                Log.d("MASUK","SNI");
-                if(TextUtils.isEmpty(email)){
-                    Toast.makeText(getContext(), "Please enter Email",Toast.LENGTH_SHORT).show();
-                }
-                if(TextUtils.isEmpty(password)){
-                    Toast.makeText(getContext(), "Please enter Password",Toast.LENGTH_SHORT).show();
-                }
+                String rePass = editTextRePassword.getText().toString().trim();
                 String fullname = name.getText().toString();
                 String addr = address.getText().toString() ;
                 String phne = phone.getText().toString();
-                user = new User(email,password,fullname,phne,addr);
-                registerUser(email,password);
-                progressDialog.setMessage("Registering User.....");
-                progressDialog.show();
+                String bType = bloodType.getText().toString();
+
+                if(editTextEmail.getText().toString().isEmpty()){
+                    editTextEmail.setError("This value cannot be empty");
+                }
+                if(editTextPassword.getText().toString().isEmpty()){
+                    editTextPassword.setError("This value cannot be empty");
+                }
+                if(editTextRePassword.getText().toString().isEmpty()){
+                    editTextRePassword.setError("This value cannot be empty");
+                }else if(password != rePass){
+                    editTextRePassword.setError("Password does not match");
+                }
+                if(name.getText().toString().isEmpty()){
+                    name.setError("This value cannot be empty");
+                }
+                if(address.getText().toString().isEmpty()){
+                    address.setError("This value cannot be empty");
+                }
+                if(phone.getText().toString().isEmpty()){
+                    phone.setError("This value cannot be empty");
+                }
+                if(bloodType.getText().toString().isEmpty()){
+                    bloodType.setError("This value cannot be empty");
+                }else if(bType != "A" || bType != "AB"  || bType != "B" || bType != "O" ){
+                    bloodType.setError("Invalid blood type");
+                }else{
+                    user = new User(email,password,fullname,phne,addr,bType);
+                    registerUser(email,password);
+                    progressDialog.setMessage("Registering User.....");
+                    progressDialog.show();
+                }
             }
         });
 
