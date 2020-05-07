@@ -106,6 +106,7 @@ public class HomeFragment extends Fragment {
     private StorageReference mAudioRef;
     FirebaseAuth auth;
     String currdir;
+    String mHashesCurrentLocation;
 
     @Nullable
     @Override
@@ -164,7 +165,8 @@ public class HomeFragment extends Fragment {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            Send_SMS();
+                            Send_SMS(mobilenumber);
+                            GetNearbyUserPhoneNumber();
                         }
                     }, 5000);   //5 seconds
                     return true;
@@ -231,7 +233,6 @@ public class HomeFragment extends Fragment {
         else {
             startActivity(new Intent(getActivity(),LoginActivity.class));
         }
-
         return home_inflater;
     }
 
@@ -261,7 +262,7 @@ public class HomeFragment extends Fragment {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            Send_SMS();
+                            Send_SMS(mobilenumber);
                         }
                     }, 5000);   //delay for 5 seconds
                     return true;
@@ -364,6 +365,8 @@ public class HomeFragment extends Fragment {
                 Latitude = location.getLatitude();
                 Longitude = location.getLongitude();
                 GeoHash hash = GeoHash.fromLocation(location, 9);
+                mHashesCurrentLocation = hash.toString();
+                //Log.d("onChanged","lokasi user saat ini : "+mHashesCurrentLocation);
                 Update_Location_FireBase(hash.toString());
             }
 
@@ -384,7 +387,7 @@ public class HomeFragment extends Fragment {
         });
     }
     //Kirim SMS yang udah di delay 10 detik
-    private void Send_SMS(){
+    private void Send_SMS(String DestPNumber){
         try {
             if(isNotSafe==true){
                 startRecording();
@@ -394,7 +397,7 @@ public class HomeFragment extends Fragment {
                 SmsManager manager;
                 SmsManager smgr = SmsManager.getDefault();
                 ArrayList<String> divideBody = smgr.divideMessage(msgbody);
-                smgr.sendMultipartTextMessage(mobilenumber, null, divideBody, null, null);
+                smgr.sendMultipartTextMessage(DestPNumber, null, divideBody, null, null);
                 Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -492,5 +495,27 @@ public class HomeFragment extends Fragment {
                                                     public void onCancelled(DatabaseError databaseError) {}
                                                 }
                 );
+    }
+    private void GetNearbyUserPhoneNumber(){
+        if(mHashesCurrentLocation != null){
+            FirebaseDatabase.getInstance().getReference("user").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds:dataSnapshot.getChildren()){
+                        if(ds.child("Location").getValue().toString().substring(0,5).equals(mHashesCurrentLocation.substring(0,5)) && !(
+                           ds.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))){
+                            Log.d("narik data","SMS ke sini blay : "+ds.child("phone").getValue().toString());
+                            Send_SMS(ds.child("phone").getValue().toString());
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // ...
+                }
+            });
+        }
+
     }
 }
