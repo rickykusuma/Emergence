@@ -7,6 +7,10 @@ public class User {
     private String phone;
     private String address;
     private String bloodType;
+    private String fam1;
+    private String fam2;
+    private String fam3;
+
 
     public User() {
 
@@ -16,7 +20,6 @@ public class User {
         this.email = email;
         this.password = password;
     }
-
 
     public User(String email, String password, String fullname, String phone, String address, String bloodType) {
         this.email = email;
@@ -73,5 +76,29 @@ public class User {
 
     public void setBloodType(String bloodType) {
         this.bloodType = bloodType;
+    }
+
+    public String getFam1() {
+        return fam1;
+    }
+
+    public void setFam1(String fam1) {
+        this.fam1 = fam1;
+    }
+
+    public String getFam2() {
+        return fam2;
+    }
+
+    public void setFam2(String fam2) {
+        this.fam2 = fam2;
+    }
+
+    public String getFam3() {
+        return fam3;
+    }
+
+    public void setFam3(String fam3) {
+        this.fam3 = fam3;
     }
 }

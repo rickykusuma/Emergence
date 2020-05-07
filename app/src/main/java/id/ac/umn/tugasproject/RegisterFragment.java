@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 public class RegisterFragment extends Fragment {
     private EditText name;
     private EditText address;
@@ -44,6 +46,7 @@ public class RegisterFragment extends Fragment {
     private FirebaseDatabase database;
     private static final String USER = "user";
     private User user;
+    private boolean valid = true;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -70,44 +73,64 @@ public class RegisterFragment extends Fragment {
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = editTextEmail.getText().toString().trim();
-                String password = editTextPassword.getText().toString().trim();
-                String rePass = editTextRePassword.getText().toString().trim();
-                String fullname = name.getText().toString();
-                String addr = address.getText().toString() ;
-                String phne = phone.getText().toString();
-                String bType = bloodType.getText().toString();
+                valid = true;
 
+                String email = editTextEmail.getText().toString().trim();
                 if(editTextEmail.getText().toString().isEmpty()){
                     editTextEmail.setError("This value cannot be empty");
+                    valid = false;
                 }
+
+                String password = editTextPassword.getText().toString().trim();
+                String rePass = editTextRePassword.getText().toString().trim();
                 if(editTextPassword.getText().toString().isEmpty()){
                     editTextPassword.setError("This value cannot be empty");
-                }
-                if(editTextRePassword.getText().toString().isEmpty()){
+                }if(editTextRePassword.getText().toString().isEmpty()){
                     editTextRePassword.setError("This value cannot be empty");
-                }else if(password != rePass){
+                }else if(!password.equals(rePass)){
                     editTextRePassword.setError("Password does not match");
+                    valid = false;
                 }
+
+                String fullname = name.getText().toString();
                 if(name.getText().toString().isEmpty()){
                     name.setError("This value cannot be empty");
+                    valid = false;
                 }
+
+                String addr = address.getText().toString() ;
                 if(address.getText().toString().isEmpty()){
                     address.setError("This value cannot be empty");
+                    valid = false;
                 }
+
+                String phne = phone.getText().toString();
                 if(phone.getText().toString().isEmpty()){
                     phone.setError("This value cannot be empty");
+                    valid = false;
                 }
+
+
+                String bType = bloodType.getText().toString();
                 if(bloodType.getText().toString().isEmpty()){
                     bloodType.setError("This value cannot be empty");
-                }else if(bType != "A" || bType != "AB"  || bType != "B" || bType != "O" ){
-                    bloodType.setError("Invalid blood type");
-                }else{
-                    user = new User(email,password,fullname,phne,addr,bType);
-                    registerUser(email,password);
+                    valid = false;
+                }if(!bType.equals("A") || !bType.equals("B") || !bType.equals("O") || !bType.equals("AB") ){
+                    bloodType.setError("Invalid blood type, please use capital letter");
+                    Log.d("MASUK","BLOOD TYPE YG MASUK  ADLAAH" + bType);
+                    valid = false;
+                }
+
+                if(valid){
+                    user = new User(email, password, fullname, phne, addr, bType);
+                    registerUser(email, password);
                     progressDialog.setMessage("Registering User.....");
                     progressDialog.show();
+                }else{
+                    Toast.makeText(getActivity(), "Please complete the form", LENGTH_SHORT).show();
                 }
+
+
             }
         });
 
@@ -144,6 +167,7 @@ public class RegisterFragment extends Fragment {
 
     public void updateUI(FirebaseUser currentUser){
         String keyId = databaseUser.push().getKey();
+        Log.d("MASUK","KEY ID " + keyId);
         databaseUser.child(keyId).setValue(user);
         Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
         startActivity(loginIntent);

@@ -102,24 +102,29 @@
                             android:layout_height="36dp"
                             android:src="@drawable/ic_invert_colors_black_24dp"/>
                         <TextView
+                            android:id="@+id/bloodType"
                             android:textStyle="bold"
                             android:layout_gravity="center_vertical"
                             android:layout_width="wrap_content"
                             android:textColor="@color/colorWhite"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="20dp"
-                            android:text="A-"/>
+                            android:paddingLeft="20dp"/>
                     </LinearLayout>
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
+
+
+
         <LinearLayout
             android:layout_width="360dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/gradientbackground"
             android:layout_gravity="center">
+
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -129,6 +134,7 @@
                 android:textColor="@color/colorWhite"
                 android:text="Saved Phone Number :"/>
 
+            // FAMILY 1 //
             <LinearLayout
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
@@ -141,7 +147,7 @@
                     android:src="@drawable/ic_phone_android_black_24dp"/>
                 <TextView
                     android:textStyle="bold"
-
+                    android:id="@+id/fam1"
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -149,6 +155,8 @@
                     android:paddingLeft="20dp"
                     android:text="+69 6969 6969"/>
             </LinearLayout>
+
+            // FAMILY 2//
             <LinearLayout
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
@@ -161,7 +169,7 @@
                     android:src="@drawable/ic_phone_android_black_24dp"/>
                 <TextView
                     android:textStyle="bold"
-
+                    android:id="@+id/fam2"
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -169,6 +177,8 @@
                     android:paddingLeft="20dp"
                     android:text="+69 6969 6969"/>
             </LinearLayout>
+
+            // FAMILY 3 //
             <LinearLayout
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
@@ -181,7 +191,7 @@
                     android:src="@drawable/ic_phone_android_black_24dp"/>
                 <TextView
                     android:textStyle="bold"
-
+                    android:id="@+id/fam3"
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
