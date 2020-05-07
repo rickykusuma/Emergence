@@ -54,6 +54,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -63,8 +68,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -228,55 +235,6 @@ public class HomeFragment extends Fragment {
         return home_inflater;
     }
 
-    private void Upload_to_Firebase_Storage(String mAudioFullPath) {
-        Uri file = Uri.fromFile(new File(mAudioFullPath));
-        UploadTask uploadTask;
-        auth = FirebaseAuth.getInstance();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        Log.d("FireBaseUID","UID = "+auth.getCurrentUser().getUid());
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        mAudioRef = storageRef.child("/audios/" + uid + "/"+mAudiofileName);
-        uploadTask = mAudioRef.putFile(file);
-        // Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-            }
-        });
-        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-
-                // Continue with the task to get the download URL
-                return mAudioRef.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    Log.d("SU_FB_STR","URI Download : "+downloadUri);
-                } else {
-                    // Handle failures
-                    // ...
-                }
-            }
-        });
-        Log.d("SU_FB_STR","Audio files name : "+mAudiofileName);
-        Log.d("SU_FB_STR","Audio Storage Ref : "+mAudioRef);
-    }
-
     // ANIMASI MENU + ERROR HANDLING //
     private void animateFab(){
         if(isOpen){
@@ -405,8 +363,8 @@ public class HomeFragment extends Fragment {
             public void onLocationChanged(Location location) {
                 Latitude = location.getLatitude();
                 Longitude = location.getLongitude();
-                Log.d("onLocateChange","Lat = "+Latitude);
-
+                GeoHash hash = GeoHash.fromLocation(location, 9);
+                Update_Location_FireBase(hash.toString());
             }
 
             @Override
@@ -425,7 +383,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
     //Kirim SMS yang udah di delay 10 detik
     private void Send_SMS(){
         try {
@@ -444,7 +401,6 @@ public class HomeFragment extends Fragment {
             Toast.makeText(getActivity(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
         }
     }
-
     private void startRecording() {
         isRecording = true;
         recorder = new MediaRecorder();
@@ -461,7 +417,6 @@ public class HomeFragment extends Fragment {
         recorder.start();
         Log.d("Start Recording Audio","Lagi recording bareng ariel");
     }
-
     private void stopRecording() {
         isRecording = false;
         recorder.stop();
@@ -472,7 +427,70 @@ public class HomeFragment extends Fragment {
         String mAudioFullPath  = currdir+mAudiofileName;
         Upload_to_Firebase_Storage(mAudioFullPath);
     }
+    private void Upload_to_Firebase_Storage(String mAudioFullPath) {
+        Uri file = Uri.fromFile(new File(mAudioFullPath));
+        UploadTask uploadTask;
+        auth = FirebaseAuth.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        Log.d("FireBaseUID","UID = "+auth.getCurrentUser().getUid());
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        mAudioRef = storageRef.child("/audios/" + uid + "/"+mAudiofileName);
+        uploadTask = mAudioRef.putFile(file);
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+            }
+        });
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
 
+                // Continue with the task to get the download URL
+                return mAudioRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    Log.d("SU_FB_STR","URI Download : "+downloadUri);
+                } else {
+                    // Handle failures
+                    // ...
+                }
+            }
+        });
+        Log.d("SU_FB_STR","Audio files name : "+mAudiofileName);
+        Log.d("SU_FB_STR","Audio Storage Ref : "+mAudioRef);
+    }
+    private void Update_Location_FireBase(final String mGeoHash){
+        FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                        Map<String, Object> postValues = new HashMap<String,Object>();
+                                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                            postValues.put(snapshot.getKey(),snapshot.getValue());
+                                                        }
+                                                        postValues.put("Location", mGeoHash);
+                                                        FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).updateChildren(postValues);
+                                                    }
 
-
+                                                    @Override
+                                                    public void onCancelled(DatabaseError databaseError) {}
+                                                }
+                );
+    }
 }

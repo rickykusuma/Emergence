@@ -115,9 +115,9 @@ public class RegisterFragment extends Fragment {
                 if(bloodType.getText().toString().isEmpty()){
                     bloodType.setError("This value cannot be empty");
                     valid = false;
-                }if(!bType.equals("A") || !bType.equals("B") || !bType.equals("O") || !bType.equals("AB") ){
+                }if(!(bType.equals("A") || bType.equals("B") || bType.equals("O") || bType.equals("AB"))){
                     bloodType.setError("Invalid blood type, please use capital letter");
-                    Log.d("MASUK","BLOOD TYPE YG MASUK  ADLAAH" + bType);
+                    Log.d("MASUK","BLOOD TYPE YG MASUK  ADLAAH " + bType);
                     valid = false;
                 }
 
@@ -166,7 +166,8 @@ public class RegisterFragment extends Fragment {
     }
 
     public void updateUI(FirebaseUser currentUser){
-        String keyId = databaseUser.push().getKey();
+        String keyId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        //String keyId = databaseUser.push().getKey();
         Log.d("MASUK","KEY ID " + keyId);
         databaseUser.child(keyId).setValue(user);
         Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
