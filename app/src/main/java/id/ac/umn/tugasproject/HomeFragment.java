@@ -165,7 +165,7 @@ public class HomeFragment extends Fragment {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            Send_SMS(mobilenumber);
+                            GetEmergencyPhoneNumber();
                             GetNearbyUserPhoneNumber();
                         }
                     }, 5000);   //5 seconds
@@ -211,6 +211,7 @@ public class HomeFragment extends Fragment {
                 public void onClick(View v) {
                     animateFab();
                     Toast.makeText(getActivity(), "TEST MASUK ASK FOR HELP", LENGTH_SHORT).show();
+                    GetEmergencyPhoneNumber();
                 }
             });
 
@@ -262,7 +263,8 @@ public class HomeFragment extends Fragment {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            Send_SMS(mobilenumber);
+                            GetEmergencyPhoneNumber();
+                            GetNearbyUserPhoneNumber();
                         }
                     }, 5000);   //delay for 5 seconds
                     return true;
@@ -391,12 +393,13 @@ public class HomeFragment extends Fragment {
         try {
             if(isNotSafe==true){
                 startRecording();
-                Log.d("send sms","Lat = "+Latitude);
+                //Log.d("send sms","Lat = "+Latitude);
                 msgbody = "ini adalah pesan OTOMATIS. jika anda menerima pesan ini berarti pemilik nomor hp ini sedang dalam BAHAYA.Lokasi pemilik nomor : ";
                 msgbody+=("http://maps.google.com?q="+Latitude+","+Longitude);
                 SmsManager manager;
                 SmsManager smgr = SmsManager.getDefault();
                 ArrayList<String> divideBody = smgr.divideMessage(msgbody);
+                Log.d("sms","SMS ke sini blay : "+DestPNumber);
                 smgr.sendMultipartTextMessage(DestPNumber, null, divideBody, null, null);
                 Toast.makeText(getActivity(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
             }
@@ -503,8 +506,8 @@ public class HomeFragment extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot ds:dataSnapshot.getChildren()){
                         if(ds.child("Location").getValue().toString().substring(0,5).equals(mHashesCurrentLocation.substring(0,5)) && !(
-                           ds.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))){
-                            Log.d("narik data","SMS ke sini blay : "+ds.child("phone").getValue().toString());
+                                ds.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))){
+//                            Log.d("narik data","SMS ke sini blay : "+ds.child("phone").getValue().toString());
                             Send_SMS(ds.child("phone").getValue().toString());
                         }
                     }
@@ -517,5 +520,24 @@ public class HomeFragment extends Fragment {
             });
         }
 
+    }
+    private void GetEmergencyPhoneNumber(){
+        FirebaseDatabase.getInstance().getReference("user").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds:dataSnapshot.getChildren()){
+                    if(ds.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                        Send_SMS(ds.child("fam1").getValue().toString());
+                        Send_SMS(ds.child("fam2").getValue().toString());
+                        Send_SMS(ds.child("fam3").getValue().toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // ...
+            }
+        });
     }
 }
