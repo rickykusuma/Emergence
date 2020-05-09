@@ -167,7 +167,6 @@ public class RegisterFragment extends Fragment {
 
     public void updateUI(FirebaseUser currentUser){
         String keyId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        //String keyId = databaseUser.push().getKey();
         Log.d("MASUK","KEY ID " + keyId);
         databaseUser.child(keyId).setValue(user);
         Intent loginIntent = new Intent(getActivity(),LoginActivity.class);

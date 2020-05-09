@@ -90,6 +90,15 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorWhite"
                             android:paddingLeft="20dp"/>
+                        <EditText
+                            android:id="@+id/ePhoneNumb"
+                            android:visibility="invisible"
+                            android:textStyle="bold"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorWhite"
+                            android:paddingLeft="20dp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_marginTop="25dp"
@@ -116,11 +125,11 @@
         </RelativeLayout>
 
 
-
         <LinearLayout
             android:layout_width="360dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:visibility="visible"
             android:background="@drawable/gradientbackground"
             android:layout_gravity="center">
 
@@ -153,7 +162,17 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorWhite"
                     android:paddingLeft="20dp"
-                    android:text="+69 6969 6969"/>
+                    />
+                <EditText
+                    android:textStyle="bold"
+                    android:id="@+id/eFam1"
+                    android:visibility="invisible"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorWhite"
+                    android:paddingLeft="20dp"
+                    />
             </LinearLayout>
 
             // FAMILY 2//
@@ -174,8 +193,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorWhite"
+                    android:paddingLeft="20dp"/>
+                <EditText
+                    android:textStyle="bold"
+                    android:id="@+id/eFam2"
+                    android:visibility="invisible"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorWhite"
                     android:paddingLeft="20dp"
-                    android:text="+69 6969 6969"/>
+                    />
             </LinearLayout>
 
             // FAMILY 3 //
@@ -196,9 +224,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorWhite"
-                    android:paddingLeft="20dp"
-                    android:text="+69 6969 6969"/>
+                    android:paddingLeft="20dp"/>
+                <EditText
+                    android:textStyle="bold"
+                    android:id="@+id/eFam3"
+                    android:visibility="invisible"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorWhite"
+                    android:paddingLeft="20dp"/>
             </LinearLayout>
+
+            <Button
+                android:id="@+id/btnAdd_or_edit_fam"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/gradientbackground"
+                android:text="Add Family Number"
+                android:textColor="#fff"
+                android:textStyle="bold" />
 
 
         </LinearLayout>
