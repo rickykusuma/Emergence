@@ -8,6 +8,7 @@ public class User {
     private String gender;
     private String address;
     private String bloodType;
+    private String location;
     private String fam1;
     private String fam2;
     private String fam3;
@@ -17,19 +18,24 @@ public class User {
 
     }
 
+
+
     public User(String email, String password ){
         this.email = email;
         this.password = password;
     }
 
-    public User(String email, String password, String fullname,String gender, String phone, String address, String bloodType) {
+    public User(String email, String password, String fullname, String gender, String phone, String address, String bloodType, String location) {
         this.email = email;
         this.password = password;
         this.fullname = fullname;
+        this.gender = gender;
         this.phone = phone;
         this.address = address;
         this.bloodType = bloodType;
+        this.location = location;
     }
+
 
     public String getEmail() {
         return email;
@@ -109,5 +115,13 @@ public class User {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

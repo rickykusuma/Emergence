@@ -158,6 +158,8 @@ public class ProfileFragment extends Fragment {
 
                         if(ds.child("gender").getValue().equals("Wanita") && !(ds.hasChild("profilePicture"))){
                             ivProfile.setBackgroundResource(R.drawable.ic_girl);
+                        }else{
+                            Glide.with(getContext()).load(ds.child("profilePicture").child("imageurl").getValue()).into(ivProfile);
                         }
 
                         tvName.setText(ds.child("fullname").getValue(String.class));

@@ -130,15 +130,13 @@ public class RegisterFragment extends Fragment {
                 }
 
                 if(valid){
-                    user = new User(email, password, fullname, gender_user, phne ,addr, bType);
+                    user = new User(email, password, fullname, gender_user, phne ,addr, bType,"AAAAAAAAA");
                     registerUser(email, password);
                     progressDialog.setMessage("Registering User.....");
                     progressDialog.show();
                 }else{
                     Toast.makeText(getActivity(), "Please complete the form", LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
