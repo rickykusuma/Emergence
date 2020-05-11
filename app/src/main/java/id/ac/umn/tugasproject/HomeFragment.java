@@ -83,9 +83,9 @@ public class HomeFragment extends Fragment {
     Animation fabOpen, fabClose, rotateFoward, rotateBakcward;
     TextView alertText;
     boolean isOpen = false;
-    String noPolisi = "1234";
-    String noAmbulance = "12345";
-    String noPemadam = "12345";
+    String noPolisi = "110";
+    String noAmbulance = "118";
+    String noPemadam = "113";
     String mobilenumber = "1234";
     String msgbody;
     Double Latitude,Longitude;
