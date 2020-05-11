@@ -471,6 +471,7 @@ public class HomeFragment extends Fragment {
         Log.d("SU_FB_STR","Audio Storage Ref : "+mAudioRef);
     }
     private void Update_Location_FireBase(final String mGeoHash){
+
         FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
@@ -479,7 +480,7 @@ public class HomeFragment extends Fragment {
                                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                                             postValues.put(snapshot.getKey(),snapshot.getValue());
                                                         }
-                                                        postValues.put("Location", mGeoHash);
+                                                        postValues.put("location", mGeoHash);
                                                         FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).updateChildren(postValues);
                                                     }
 
@@ -496,8 +497,8 @@ public class HomeFragment extends Fragment {
                     Log.d("narik data","mHashesCurrentLocation "+mHashesCurrentLocation);
 
                     for (DataSnapshot ds:dataSnapshot.getChildren()){
-                        Log.d("narik data","Location DB "+ds.child("Location").getValue().toString());
-                        if(ds.child("Location").getValue().toString().substring(0,5).equals(mHashesCurrentLocation.substring(0,5)) && !(
+                        Log.d("narik data","Location DB "+ds.child("location").getValue().toString());
+                        if(ds.child("location").getValue().toString().substring(0,5).equals(mHashesCurrentLocation.substring(0,5)) && !(
                                 ds.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))){
 //                            Log.d("narik data","SMS ke sini blay : "+ds.child("phone").getValue().toString());
                             Send_SMS(ds.child("phone").getValue().toString());
@@ -519,12 +520,12 @@ public class HomeFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds:dataSnapshot.getChildren()){
                     if(ds.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-                        if((ds.child("fam1").getValue().toString().equals("-"))){
+                        if(ds.child("fam1").exists() && !(ds.child("fam1").getValue().toString().equals("-"))){
                             Send_SMS(ds.child("fam1").getValue().toString());
                         }
-                        if((ds.child("fam2").getValue().toString().equals("-"))){
+                        if(ds.child("fam2").exists()&& !(ds.child("fam2").getValue().toString().equals("-"))){
                             Send_SMS(ds.child("fam2").getValue().toString());
-                        }if((ds.child("fam3").getValue().toString().equals("-"))){
+                        }if(ds.child("fam3").exists() && !(ds.child("fam1").getValue().toString().equals("-"))){
                             Send_SMS(ds.child("fam3").getValue().toString());
                         }
 
