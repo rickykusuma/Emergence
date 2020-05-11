@@ -63,33 +63,6 @@
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/ask_for_help"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_hospital"
-            android:visibility="invisible"
-            app:backgroundTint="#ffffff"
-            app:fabCustomSize="75dp"
-            app:layout_constraintEnd_toEndOf="@id/pulseAnim1"
-            app:layout_constraintTop_toBottomOf="@id/pulseAnim1"
-            />
-
-
-        <TextView
-            android:id="@+id/txt_ask_for_help"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:gravity="center"
-            android:visibility="invisible"
-            android:src="@drawable/ic_hospital"
-            android:text="Ask for help"
-            android:textColor="@color/colorWhite"
-            android:textSize="25px"
-            app:layout_constraintEnd_toEndOf="@id/ask_for_help"
-            app:layout_constraintTop_toBottomOf="@id/ask_for_help" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/rumahSakit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,21 +71,8 @@
             app:backgroundTint="#ffffff"
             app:fabCustomSize="75dp"
             app:layout_constraintStart_toEndOf="@id/pulseAnim1"
-            app:layout_constraintBottom_toBottomOf="@id/pulseAnim1"/>
+            app:layout_constraintTop_toBottomOf="@id/pulseAnim1"/>
 
-        <TextView
-            android:id="@+id/txtRumahSakit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:gravity="center"
-            android:visibility="invisible"
-            android:src="@drawable/ic_hospital"
-            android:text="Call hospital"
-            android:textColor="@color/colorWhite"
-            android:textSize="25px"
-            app:layout_constraintEnd_toEndOf="@id/rumahSakit"
-            app:layout_constraintTop_toBottomOf="@id/rumahSakit" />
 
 
 
@@ -125,23 +85,9 @@
             android:visibility="invisible"
             app:backgroundTint="#ffffff"
             app:fabCustomSize="75dp"
-            app:layout_constraintStart_toStartOf="@id/pulseAnim1"
-            app:layout_constraintTop_toBottomOf="@id/pulseAnim1"/>
-
-
-        <TextView
-            android:id="@+id/txtPemadam"
-            android:visibility="invisible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:gravity="center"
-            android:src="@drawable/ic_hospital"
-            android:text="Call pemadam"
-            android:textColor="@color/colorWhite"
-            android:textSize="25px"
-            app:layout_constraintEnd_toEndOf="@id/pemadamKebakaran"
-            app:layout_constraintTop_toBottomOf="@id/pemadamKebakaran" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textAlert"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/polisi"
@@ -151,23 +97,8 @@
             android:visibility="invisible"
             app:backgroundTint="#ffffff"
             app:fabCustomSize="75dp"
-            app:layout_constraintBottom_toBottomOf="@id/pulseAnim1"
+            app:layout_constraintTop_toBottomOf="@id/pulseAnim1"
             app:layout_constraintEnd_toStartOf="@id/pulseAnim1"/>
-
-
-        <TextView
-            android:id="@+id/txtPolisi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:gravity="center"
-            android:src="@drawable/ic_hospital"
-            android:text="Call polisi"
-            android:textColor="@color/colorWhite"
-            android:textSize="25px"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="@id/polisi"
-            app:layout_constraintTop_toBottomOf="@id/polisi" />
 
         <Button
             android:id="@+id/safeBtn"
@@ -181,23 +112,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pulseAnim1"
             app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <TextView
-            android:id="@+id/txtDanger"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lines="2"
-            android:text="Your family and people arround you \n will see your request for help"
-            android:textAlignment="center"
-            android:textColor="@color/colorWhite"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pulseAnim1"
-            app:layout_constraintVertical_bias="0.246" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

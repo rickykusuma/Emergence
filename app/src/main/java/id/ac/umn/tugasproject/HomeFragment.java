@@ -79,7 +79,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class HomeFragment extends Fragment {
     private static final int MY_PERMISSIONS_REQUEST_ALL_PERMISSION = 200;
     Button safebtn;
-    FloatingActionButton menu,polisi,rumahSakit,pemadamKebakaran, ask_for_help;
+    FloatingActionButton menu,polisi,rumahSakit,pemadamKebakaran;
     Animation fabOpen, fabClose, rotateFoward, rotateBakcward;
     TextView alertText;
     boolean isOpen = false;
@@ -116,7 +116,6 @@ public class HomeFragment extends Fragment {
         polisi = (FloatingActionButton)home_inflater.findViewById(R.id.polisi);
         rumahSakit = (FloatingActionButton)home_inflater.findViewById(R.id.rumahSakit);
         pemadamKebakaran = (FloatingActionButton)home_inflater.findViewById(R.id.pemadamKebakaran);
-        ask_for_help = (FloatingActionButton)home_inflater.findViewById(R.id.ask_for_help);
         fabOpen = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_close);
         rotateBakcward =  AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_backward);
@@ -206,14 +205,6 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-            ask_for_help.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    animateFab();
-                    Toast.makeText(getActivity(), "TEST MASUK ASK FOR HELP", LENGTH_SHORT).show();
-                    GetEmergencyPhoneNumber();
-                }
-            });
 
             safebtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -244,11 +235,9 @@ public class HomeFragment extends Fragment {
             polisi.startAnimation(fabClose);
             rumahSakit.startAnimation(fabClose);
             pemadamKebakaran.startAnimation(fabClose);
-            ask_for_help.startAnimation(fabClose);
             polisi.setClickable(false);
             rumahSakit.setClickable(false);
             pemadamKebakaran.setClickable(false);
-            ask_for_help.setClickable(false);
             isOpen = false;
             menu.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -276,11 +265,9 @@ public class HomeFragment extends Fragment {
             polisi.startAnimation(fabOpen);
             rumahSakit.startAnimation(fabOpen);
             pemadamKebakaran.startAnimation(fabOpen);
-            ask_for_help.startAnimation(fabOpen);
             polisi.setClickable(true);
             rumahSakit.setClickable(true);
             pemadamKebakaran.setClickable(true);
-            ask_for_help.setClickable(true);
             isOpen = true;
             menu.setOnLongClickListener(null);
         }
