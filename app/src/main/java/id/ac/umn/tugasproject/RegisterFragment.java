@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,8 @@ public class RegisterFragment extends Fragment {
     private EditText editTextEmail;
     private EditText editTextPassword;
     private EditText editTextRePassword;
+    private RadioGroup genderRG;
+    private RadioButton genderBtn;
     private ProgressDialog progressDialog;
     private Button buttonRegister;
     private EditText bloodType;
@@ -54,7 +57,7 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View Register_inflater = inflater.inflate(R.layout.fragment_register, container, false);
+        final View Register_inflater = inflater.inflate(R.layout.fragment_register, container, false);
         progressDialog = new ProgressDialog(getContext());
         buttonRegister = (Button) Register_inflater.findViewById(R.id.btn_register);
         name = (EditText) Register_inflater.findViewById(R.id.et_name);
@@ -64,6 +67,7 @@ public class RegisterFragment extends Fragment {
         editTextPassword = (EditText) Register_inflater.findViewById(R.id.et_password);
         editTextRePassword = (EditText) Register_inflater.findViewById(R.id.et_repassword);
         bloodType = (EditText) Register_inflater.findViewById(R.id.bloodType);
+        genderRG = (RadioGroup)Register_inflater.findViewById(R.id.gender);
 
 
         database = FirebaseDatabase.getInstance();
@@ -104,25 +108,29 @@ public class RegisterFragment extends Fragment {
                     valid = false;
                 }
 
+                int gender = genderRG.getCheckedRadioButtonId();
+                genderBtn = (RadioButton) Register_inflater.findViewById(gender);
+                String gender_user = genderBtn.getText().toString();
+                Log.d("MASUK","GENDER REGIS : " + gender_user);
+
                 String phne = phone.getText().toString();
                 if(phone.getText().toString().isEmpty()){
                     phone.setError("This value cannot be empty");
                     valid = false;
                 }
 
-
                 String bType = bloodType.getText().toString();
                 if(bloodType.getText().toString().isEmpty()){
                     bloodType.setError("This value cannot be empty");
                     valid = false;
-                }if(!(bType.equals("A") || bType.equals("A-") || bType.equals("A+") || bType.equals("B")|| bType.equals("B+")|| bType.equals("B-") || bType.equals("O") || bType.equals("O-") || bType.equals("O+") || bType.equals("AB-") || bType.equals("AB+") || bType.equals("AB"))){
+                }if(!(bType.equals("A") || bType.equals("B") || bType.equals("O") || bType.equals("AB"))){
                     bloodType.setError("Invalid blood type, please use capital letter");
                     Log.d("MASUK","BLOOD TYPE YG MASUK  ADLAAH " + bType);
                     valid = false;
                 }
 
                 if(valid){
-                    user = new User(email, password, fullname, phne, addr, bType);
+                    user = new User(email, password, fullname, gender_user, phne ,addr, bType);
                     registerUser(email, password);
                     progressDialog.setMessage("Registering User.....");
                     progressDialog.show();

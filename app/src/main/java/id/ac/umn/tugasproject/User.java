@@ -5,6 +5,7 @@ public class User {
     private String password;
     private String fullname;
     private String phone;
+    private String gender;
     private String address;
     private String bloodType;
     private String fam1;
@@ -21,7 +22,7 @@ public class User {
         this.password = password;
     }
 
-    public User(String email, String password, String fullname, String phone, String address, String bloodType) {
+    public User(String email, String password, String fullname,String gender, String phone, String address, String bloodType) {
         this.email = email;
         this.password = password;
         this.fullname = fullname;
@@ -100,5 +101,13 @@ public class User {
 
     public void setFam3(String fam3) {
         this.fam3 = fam3;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }
