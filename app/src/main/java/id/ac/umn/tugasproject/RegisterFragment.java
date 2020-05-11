@@ -115,7 +115,7 @@ public class RegisterFragment extends Fragment {
                 if(bloodType.getText().toString().isEmpty()){
                     bloodType.setError("This value cannot be empty");
                     valid = false;
-                }if(!(bType.equals("A") || bType.equals("B") || bType.equals("O") || bType.equals("AB"))){
+                }if(!(bType.equals("A") || bType.equals("A-") || bType.equals("A+") || bType.equals("B")|| bType.equals("B+")|| bType.equals("B-") || bType.equals("O") || bType.equals("O-") || bType.equals("O+") || bType.equals("AB-") || bType.equals("AB+") || bType.equals("AB"))){
                     bloodType.setError("Invalid blood type, please use capital letter");
                     Log.d("MASUK","BLOOD TYPE YG MASUK  ADLAAH " + bType);
                     valid = false;

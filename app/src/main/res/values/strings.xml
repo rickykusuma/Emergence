@@ -22,5 +22,10 @@
     <string name="re_type_password">Re-type Password</string>
     <string name="your_name">Full Name</string>
     <string name="Address">Address</string>
+    <string name="BloodType">Blood Type</string>
+    <string name="Blood_Type_O">O</string>
+    <string name="Blood_Type_AB">AB</string>
+    <string name="Blood_Type_A">A</string>
+    <string name="Blood_Type_B">B</string>
     <string name="phone_number">Phone Number</string>
 </resources>
