@@ -25,9 +25,7 @@
                     android:layout_marginTop="45dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/djasen"
-                    />
+                    android:layout_height="100dp"/>
                 <TextView
                     android:id="@+id/tvName"
                     android:layout_marginTop="10dp"
