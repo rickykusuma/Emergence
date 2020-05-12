@@ -471,7 +471,7 @@ public class HomeFragment extends Fragment {
         Log.d("SU_FB_STR","Audio Storage Ref : "+mAudioRef);
     }
     private void Update_Location_FireBase(final String mGeoHash){
-    if(!(FirebaseAuth.getInstance().getCurrentUser().equals(null))){
+    if(!(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(null))){
         FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
