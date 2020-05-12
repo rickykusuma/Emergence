@@ -186,9 +186,9 @@ public class ProfileFragment extends Fragment {
                                         eFam3.setVisibility(View.VISIBLE);
 
                                         // BIKIN TEXT VIEW NYA INVISIBLE DULU //
-                                        fam1.setVisibility(View.INVISIBLE);
-                                        fam2.setVisibility(View.INVISIBLE);
-                                        fam3.setVisibility(View.INVISIBLE);
+                                        fam1.setVisibility(View.GONE);
+                                        fam2.setVisibility(View.GONE);
+                                        fam3.setVisibility(View.GONE);
                                         edit = false;
                                     }else{
                                         // BIAR SETIDAKNY DIA MASUKIN 1 FAM NUMBER //
@@ -216,9 +216,9 @@ public class ProfileFragment extends Fragment {
                                             }
 
                                             // BIKIN EDIT TEXT NYA INVISIBLE //
-                                            eFam1.setVisibility(View.INVISIBLE);
-                                            eFam2.setVisibility(View.INVISIBLE);
-                                            eFam3.setVisibility(View.INVISIBLE);
+                                            eFam1.setVisibility(View.GONE);
+                                            eFam2.setVisibility(View.GONE);
+                                            eFam3.setVisibility(View.GONE);
 
                                             // BIKIN TEXT VIEW NYA VISIBLE  //
                                             fam1.setVisibility(View.VISIBLE);
@@ -246,9 +246,9 @@ public class ProfileFragment extends Fragment {
                                         eFam3.setVisibility(View.VISIBLE);
 
                                         // BIKIN TEXT VIEW NYA INVISIBLE DULU //
-                                        fam1.setVisibility(View.INVISIBLE);
-                                        fam2.setVisibility(View.INVISIBLE);
-                                        fam3.setVisibility(View.INVISIBLE);
+                                        fam1.setVisibility(View.GONE);
+                                        fam2.setVisibility(View.GONE);
+                                        fam3.setVisibility(View.GONE);
                                         edit = false;
                                     }else{
                                         // BIAR SETIDAKNY DIA MASUKIN 1 FAM NUMBER //
@@ -277,9 +277,9 @@ public class ProfileFragment extends Fragment {
                                             }
 
                                             // BIKIN EDIT TEXT NYA INVISIBLE //
-                                            eFam1.setVisibility(View.INVISIBLE);
-                                            eFam2.setVisibility(View.INVISIBLE);
-                                            eFam3.setVisibility(View.INVISIBLE);
+                                            eFam1.setVisibility(View.GONE);
+                                            eFam2.setVisibility(View.GONE);
+                                            eFam3.setVisibility(View.GONE);
 
                                             // BIKIN TEXT VIEW NYA VISIBLE  //
                                             fam1.setVisibility(View.VISIBLE);
