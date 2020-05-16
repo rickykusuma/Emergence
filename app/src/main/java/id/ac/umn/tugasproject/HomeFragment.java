@@ -474,14 +474,21 @@ public class HomeFragment extends Fragment {
     if(!(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(null))){
         FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
+
+
                                                     @Override
                                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                                        Map<String, Object> postValues = new HashMap<String,Object>();
-                                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                                            postValues.put(snapshot.getKey(),snapshot.getValue());
+                                                        if (dataSnapshot.hasChild("email")) {
+                                                            Map<String, Object> postValues = new HashMap<String, Object>();
+                                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                                postValues.put(snapshot.getKey(), snapshot.getValue());
+                                                            }
+                                                            Log.d("update location","Location Updating");
+                                                            postValues.put("location", mGeoHash);
+                                                            FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).updateChildren(postValues);
+                                                        } else {
+
                                                         }
-                                                        postValues.put("location", mGeoHash);
-                                                        FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).updateChildren(postValues);
                                                     }
 
                                                     @Override
